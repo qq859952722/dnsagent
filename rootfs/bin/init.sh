@@ -44,9 +44,8 @@ download_binaries() {
     local AGH_URL="https://github.com/AdguardTeam/AdGuardHome/releases/download/${AGH_LATEST}/AdGuardHome_linux_${ARCH}.tar.gz"
     echo "Downloading AdGuardHome ${AGH_LATEST}..."
     curl -fsSL -o "$BIN_DIR/AdGuardHome.tar.gz" "$AGH_URL"
-    tar -xzf "$BIN_DIR/AdGuardHome.tar.gz" -C "$BIN_DIR"
-    mv "$BIN_DIR/AdGuardHome/AdGuardHome" "$BIN_DIR/"
-    rm -rf "$BIN_DIR/AdGuardHome" "$BIN_DIR/AdGuardHome.tar.gz"
+    tar -xzf "$BIN_DIR/AdGuardHome.tar.gz" -C "$BIN_DIR" --strip-components=1
+    rm -f "$BIN_DIR/AdGuardHome.tar.gz"
 
     # SmartDNS - download latest binary directly
     local SMARTDNS_LATEST
@@ -71,7 +70,7 @@ download_binaries() {
     echo "Downloading dnscrypt-proxy ${DNSCRYPT_LATEST}..."
     curl -fsSL -o "$BIN_DIR/dnscrypt-proxy.tar.gz" "$DNSCRYPT_URL"
     tar -xzf "$BIN_DIR/dnscrypt-proxy.tar.gz" -C "$BIN_DIR"
-    mv "$BIN_DIR/linux-${DNSCRYPT_ARCH}/dnscrypt-proxy" "$BIN_DIR/"
+    [ -f "$BIN_DIR/linux-${DNSCRYPT_ARCH}/dnscrypt-proxy" ] && mv "$BIN_DIR/linux-${DNSCRYPT_ARCH}/dnscrypt-proxy" "$BIN_DIR/"
     rm -rf "$BIN_DIR/linux-${DNSCRYPT_ARCH}" "$BIN_DIR/dnscrypt-proxy.tar.gz"
 
     chmod +x "$BIN_DIR/AdGuardHome" "$BIN_DIR/smartdns.bin" "$BIN_DIR/dnscrypt-proxy"
