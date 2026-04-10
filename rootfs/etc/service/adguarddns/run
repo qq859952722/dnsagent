@@ -1,0 +1,2 @@
+#!/bin/sh
+exec /bin/AdGuardHome -c /config/adguardhome/AdGuardHome.yaml -w /config/adguardhome  -h 0.0.0.0 -p 3000

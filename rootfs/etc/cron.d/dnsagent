@@ -1,0 +1,8 @@
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+# Run the DNS agent cron service check every hour
+0 * * * * root /bin/cron_service_check.sh >> /var/log/cron_service_check.log 2>&1
+
+# Run the weekly DNS agent list update task once a week on Sunday at midnight
+0 0 * * 0 root /bin/cron_tasks.sh >> /var/log/cron_update_list.log 2>&1

@@ -1,105 +1,127 @@
-# DNSAgent Docker Image
+# DNS 容器项目
 
-一个包含 AdGuardHome、SmartDNS 和 dnscrypt-proxy 的 DNS 代理容器镜像。
+这是一个基于 Docker 的 DNS 解决方案容器，集成了多个 DNS 组件以提供安全、快速和稳定的 DNS 服务。
 
-## 功能特性
+## 项目特性
 
-- **AdGuardHome**: 广告拦截和 DNS 服务器（Web 管理界面：http://localhost:3000）
-- **SmartDNS**: 智能 DNS 代理，支持国内外 DNS 分流
-- **dnscrypt-proxy**: DNS 加密代理，保护 DNS 查询隐私
-- **runit**: 轻量级进程管理
-- **自动配置初始化**: 首次启动自动复制默认配置到 /config
-- **列表更新**: 支持启动时和定时更新 SmartDNS 列表
-- **应用更新**: 内置工具脚本，可手动更新三个应用程序
-- **CI/CD**: GitHub Actions 自动构建和推送镜像
+- **AdGuardHome**：广告拦截和DNS过滤服务
+- **SmartDNS**：智能DNS解析，支持多上游服务器和速度检测
+- **DNSCrypt Proxy**：加密DNS通信，提供隐私保护
+- **Runit服务管理**：进程管理和自动重启
+- **Cron任务**：定时更新规则列表
+
+## 项目结构
+
+```
+dns/
+├── Dockerfile                # Docker镜像构建文件
+├── README.md                 # 项目说明文档
+└── rootfs/                   # 根文件系统
+    ├── bin/
+    │   └── init.sh           # 初始化和服务管理脚本
+    ├── config_back/          # 默认配置文件备份
+    │   ├── adguardhome/
+    │   ├── dnscrypt-proxy/
+    │   └── smartdns/
+    └── etc/service/          # Runit服务配置
+        ├── adguarddns/
+        ├── cron/
+        ├── dnscrypt-proxy/
+        └── smartdns/
+```
 
 ## 快速开始
 
 ### 构建镜像
 
 ```bash
-docker build -t dnsagent .
+docker build -t dns-container .
 ```
 
 ### 运行容器
 
 ```bash
 docker run -d \
-  --name dnsagent \
-  -p 53:53/udp \
+  --name dns-container \
   -p 53:53/tcp \
-  -p 3000:3000 \
-  -v ./config:/config \
-  dnsagent
-```
-
-### 使用环境变量
-
-```bash
-docker run -d \
-  --name dnsagent \
   -p 53:53/udp \
-  -p 53:53/tcp \
-  -p 3000:3000 \
-  -v ./config:/config \
-  -e UPDATE_LISTS_ON_START=true \
-  -e UPDATE_LISTS_CRON="0 4 * * *" \
-  dnsagent
+  -p 80:80 \
+  -v dns-config:/config \
+  dns-container
 ```
 
-### 使用 Docker Compose
+### 端口说明
+
+- **53 TCP/UDP**：DNS服务端口
+- **80 TCP**：AdGuardHome Web管理界面
+
+## 配置管理
+
+首次运行时，容器会将默认配置复制到 `/config` 目录。您可以挂载该目录到宿主机进行持久化配置。
+
+### 配置文件位置
+
+- **AdGuardHome**：`/config/adguardhome/AdGuardHome.yaml`
+- **SmartDNS**：`/config/smartdns/smartdns.conf`
+- **DNSCrypt Proxy**：`/config/dnscrypt-proxy/dnscrypt-proxy.toml`
+- **规则列表**：`/config/rules/`
+
+## 使用说明
+
+### AdGuardHome Web界面
+
+访问 `http://容器IP:80` 可以进入AdGuardHome的Web管理界面。
+
+默认凭据（需要在配置中修改）：
+- 用户名：admin
+- 密码：（需要在配置中设置）
+
+### DNS 工作流程
+
+1. 客户端请求 → AdGuardHome（广告过滤）→ SmartDNS（智能解析）→ DNSCrypt Proxy（加密传输）→ 上游DNS服务器
+2. 支持中国域名直连、国外域名加密访问
+
+### 定时更新
+
+容器内置Cron任务，定期更新规则列表（包括直连域名、代理域名和中国IP列表）。
+
+## 技术栈
+
+- **基础镜像**：Debian Bullseye Slim
+- **服务管理**：Runit
+- **DNS组件**：
+  - AdGuardHome
+  - SmartDNS
+  - DNSCrypt Proxy
+- **工具**：Curl、Wget、Cron
+
+## 故障排除
+
+### 查看服务状态
 
 ```bash
-docker-compose up -d
+docker exec dns-container sv status /etc/service/*
 ```
 
-**docker-compose.yml 配置说明：**
-- 使用桥接网络模式
-- 启用 IPv6 支持
-- 包含健康检查
-- 自动重启策略
-- 持久化配置文件
-
-## 环境变量
-
-| 变量名 | 默认值 | 说明 |
-|--------|--------|------|
-| `UPDATE_LISTS_ON_START` | `false` | 启动时是否更新 SmartDNS 列表 |
-| `UPDATE_LISTS_CRON` | `0 3 * * *` | 定时更新列表的 cron 表达式 |
-
-## 目录结构
-
-```
-/config/
-├── adguarddns/      # AdGuardHome 配置
-├── smartdns/        # SmartDNS 配置
-│   └── list/        # SmartDNS 列表文件
-│       ├── gfwlist.txt
-│       ├── china_ip.txt
-│       └── china_domain.txt
-└── dnscrypt-proxy/  # dnscrypt-proxy 配置
-```
-
-## 使用工具脚本
-
-### 更新列表
+### 查看日志
 
 ```bash
-docker exec -it dnsagent /usr/local/bin/update-lists.sh
+docker logs dns-container
 ```
 
-### 更新应用程序
+### 重启特定服务
 
 ```bash
-docker exec -it dnsagent /usr/local/bin/update-apps.sh
+docker exec dns-container sv restart /etc/service/adguarddns
 ```
 
-## 端口说明
+## 安全建议
 
-- `53/udp`, `53/tcp`: DNS 服务
-- `3000/tcp`: AdGuardHome Web 管理界面
-- `80/tcp`: AdGuardHome HTTP（可选）
+1. 及时修改AdGuardHome默认密码
+2. 定期更新镜像以获取安全补丁
+3. 根据需要配置防火墙规则限制访问
+4. 使用HTTPS配置AdGuardHome管理界面
 
-## 默认凭据
+## 许可证
 
-AdGuardHome 默认用户名：`admin`，密码：`admin`（首次登录后请立即修改）
+本项目仅供学习和研究使用。

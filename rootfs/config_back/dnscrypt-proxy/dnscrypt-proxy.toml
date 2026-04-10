@@ -1,0 +1,62 @@
+# dnscrypt-proxy configuration file
+
+[global]
+  # List of servers to use
+  server_names = [ 'cloudflare', 'google' ]
+  
+  # Maximum number of concurrent connections to each server
+  max_clients = 250
+  
+  # Use IPv4
+  ipv4_servers = true
+  
+  # Use IPv6
+  ipv6_servers = true
+  
+  # DNS cache size
+  cache_size = 4096
+  
+  # Cache TTL
+  cache_min_ttl = 2400
+  cache_max_ttl = 86400
+  
+  # Enable DNSSEC
+  dnssec = true
+  
+  # Enable IPv6
+  block_ipv6 = false
+  
+  # Fallback resolver
+  fallback_resolver = '8.8.8.8:53'
+  
+  # Ignore system DNS settings
+  ignore_system_dns = true
+  
+  # Listen address
+  listen_addresses = [ '0.0.0.0:53' ]
+  
+  # Log level
+  log_level = 2
+  
+  # Log file
+  log_file = '/var/log/dnscrypt-proxy.log'
+
+[local_doh]
+  # Local DoH server (optional)
+  listen_addresses = [ '127.0.0.1:3000' ]
+  path = '/dns-query'
+
+[static]
+  # Static server definitions
+  [static.'cloudflare']
+    stamp = 'sdns://AgcAAAAAAAAAAAAAAAABwbG9jYWxob3N0LmNsb3VkZmxhcmUuY29tCi9kbnMtcXVlcnk'
+  
+  [static.'google']
+    stamp = 'sdns://AgcAAAAAAAAAAAAAAAABmdns.google.com'
+
+[anonymized_dns]
+  # Anonymized DNS relay servers
+  routes = [
+    { server_name='cloudflare', via=['*'] },
+    { server_name='google', via=['*'] }
+  ]
