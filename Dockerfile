@@ -19,11 +19,12 @@ RUN ADGUARD_VERSION=$(curl -s https://api.github.com/repos/AdguardTeam/AdGuardHo
     mv AdGuardHome/AdGuardHome /usr/local/bin/ && \
     rm -rf adguardhome.tar.gz AdGuardHome && \
     \
+    # 修复 SmartDNS：直接下载二进制文件（无需解压）
     SMARTDNS_VERSION=$(curl -s https://api.github.com/repos/pymumu/smartdns/releases/latest | jq -r '.tag_name') && \
-    wget -O smartdns.tar.gz "https://github.com/pymumu/smartdns/releases/download/${SMARTDNS_VERSION}/smartdns-x86_64-linux-all.tar.gz" && \
-    tar -xzf smartdns.tar.gz && \
-    mv smartdns/usr/sbin/smartdns /usr/local/bin/ && \
-    rm -rf smartdns.tar.gz smartdns && \
+    # 从 GitHub API 获取 x86_64 二进制文件的下载链接（适配文件名变化）
+    SMARTDNS_BINARY_URL=$(curl -s https://api.github.com/repos/pymumu/smartdns/releases/latest | jq -r '.assets[] | select(.name | test("smartdns-x86_64-linux")) | .browser_download_url') && \
+    wget -O /usr/local/bin/smartdns "${SMARTDNS_BINARY_URL}" && \
+    chmod +x /usr/local/bin/smartdns && \
     \
     DNSCRYPT_PROXY_VERSION=$(curl -s https://api.github.com/repos/DNSCrypt/dnscrypt-proxy/releases/latest | jq -r '.tag_name') && \
     DNSCRYPT_VERSION_NUM=${DNSCRYPT_PROXY_VERSION#v} && \
