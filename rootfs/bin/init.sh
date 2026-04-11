@@ -45,6 +45,9 @@ download_binaries() {
     echo "Downloading AdGuardHome ${AGH_LATEST}..."
     curl -fsSL -o "$BIN_DIR/AdGuardHome.tar.gz" "$AGH_URL"
     tar -xzf "$BIN_DIR/AdGuardHome.tar.gz" -C "$BIN_DIR" --strip-components=1
+    mv $BIN_DIR/AdGuardHome/AdGuardHome $BIN_DIR/AdGuardHome_tmp
+    rm -rf $BIN_DIR/AdGuardHome
+    mv $BIN_DIR/AdGuardHome_tmp $BIN_DIR/AdGuardHome
     rm -f "$BIN_DIR/AdGuardHome.tar.gz"
 
     # SmartDNS - download latest binary directly
