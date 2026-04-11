@@ -178,7 +178,7 @@ initialize_system() {
     # 下载二进制文件到/bin目录
     echo "Downloading binaries to /bin directory..."
     download_binaries "/bin"
-    download_rule_lists "/config/smartdns/list"
+    download_rule_lists "/config_back/smartdns/list"
     chmod +x /bin/cron_tasks.sh /bin/cron_service_check.sh /etc/service/adguarddns/run /etc/service/cron/run /etc/service/dnscrypt-proxy/run /etc/service/smartdns/run || true
     
     # 清理apt缓存以减少镜像大小
