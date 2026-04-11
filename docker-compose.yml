@@ -22,23 +22,15 @@ services:
       # ============================================================
       # AdGuardHome Web UI (TCP 80/443)
       # ============================================================
-      - "80:80/tcp"                    # HTTP Web UI (IPv4)
-      # - "443:443/tcp"                # HTTPS Web UI (可选)
-      
+      - "3000:3000/tcp"                    # HTTP Web UI (IPv4)
+      - "443:443/tcp"                # HTTPS Web UI (可选)
+      - "853:853/tcp"                    # DNS TCP (IPv4)
+      - "853:853/udp"                    # DNS UDP (IPv4)
       # IPv6 Web UI - 可选
       # - "[::1]:80:80/tcp"             # HTTP Web UI (IPv6)
       # - "[::1]:443:443/tcp"           # HTTPS Web UI (IPv6)
       
-      # ============================================================
-      # 其他 DNS 服务端口
-      # ============================================================
-      # SmartDNS
-      - "5353:5353/tcp"                # SmartDNS TCP
-      - "5353:5353/udp"                # SmartDNS UDP
-      
-      # DNSCrypt Proxy
-      - "5054:5054/tcp"                # DNSCrypt TCP
-      - "5054:5054/udp"                # DNSCrypt UDP
+
     
     # 数据卷配置
     volumes:
