@@ -1,0 +1,102 @@
+Operator,Type,Address/URL,Note
+Google,DoH,https://dns.google/dns-query,Global Anycast
+Google,DoH,https://8.8.8.8/dns-query,Global Anycast
+Google,DoH,https://8.8.4.4/dns-query,Global Anycast
+Google,DoT,dns.google,Global Anycast
+Google,DoT,8.8.8.8,Global Anycast
+Google,DoT,8.8.4.4,Global Anycast
+Cloudflare,DoH,https://cloudflare-dns.com/dns-query,Global Anycast
+Cloudflare,DoH,https://1.1.1.1/dns-query,Global Anycast
+Cloudflare,DoH,https://1.0.0.1/dns-query,Global Anycast
+Cloudflare,DoT,one.one.one.one,Global Anycast
+Cloudflare,DoT,1.1.1.1,Global Anycast
+Cloudflare,DoT,1.0.0.1,Global Anycast
+Quad9,DoH,https://dns.quad9.net/dns-query,Global Anycast
+Quad9,DoH,https://dns9.quad9.net/dns-query,Unfiltered
+Quad9,DoH,https://9.9.9.9/dns-query,Global Anycast
+Quad9,DoT,dns.quad9.net,Global Anycast
+Quad9,DoT,dns9.quad9.net,Unfiltered
+Quad9,DoT,9.9.9.9,Global Anycast
+Control D,DoH,https://freedns.controld.com/p0,Unfiltered
+Control D,DoH,https://freedns.controld.com/p1,Security Only
+Control D,DoH,https://freedns.controld.com/x-oisd,OISD Filter
+Control D,DoT,p0.freedns.controld.com,Unfiltered
+Control D,DoT,p1.freedns.controld.com,Security Only
+Control D,DoT,x-oisd.freedns.controld.com,OISD Filter
+DNS.SB,DoH,https://doh.dns.sb/dns-query,Global Anycast
+DNS.SB,DoH,https://45.11.45.11/dns-query,Global Anycast
+DNS.SB,DoT,dot.dns.sb,Global Anycast
+DNS.SB,DoT,45.11.45.11,Global Anycast
+AdGuard,DoH,https://unfiltered.adguard-dns.com/dns-query,Unfiltered
+AdGuard,DoH,https://dns.adguard-dns.com/dns-query,Default Filter
+AdGuard,DoT,unfiltered.adguard-dns.com,Unfiltered
+AdGuard,DoT,dns.adguard-dns.com,Default Filter
+Mullvad,DoH,https://doh.mullvad.net/dns-query,No-logging
+Mullvad,DoT,dot.mullvad.net,No-logging
+Cisco Umbrella,DoH,https://doh.opendns.com/dns-query,Anycast
+Cisco Umbrella,DoH,https://doh.familyshield.opendns.com/dns-query,Family Shield
+Cisco Umbrella,DoT,dns.opendns.com,Anycast
+NextDNS,DoH,https://dns.nextdns.io,Anycast
+NextDNS,DoT,anycast.dns.nextdns.io,Anycast
+CZ.NIC,DoH,https://odvr.nic.cz/dns-query,Czech Republic
+CZ.NIC,DoT,odvr.nic.cz,Czech Republic
+LibreDNS,DoH,https://doh.libredns.gr/dns-query,Germany
+LibreDNS,DoT,dot.libredns.gr,Germany
+Digitale Gesellschaft,DoH,https://dns.digitale-gesellschaft.ch/dns-query,Switzerland
+Digitale Gesellschaft,DoT,dns.digitale-gesellschaft.ch,Switzerland
+Gcore,DoH,https://ns1.gcore.com/dns-query,Global Anycast
+Gcore,DoH,https://ns2.gcore.com/dns-query,Global Anycast
+Gcore,DoT,ns1.gcore.com,Global Anycast
+Gcore,DoT,ns2.gcore.com,Global Anycast
+Foundation Applied Privacy,DoH,https://doh.applied-privacy.net/query,Austria
+Foundation Applied Privacy,DoT,dot.applied-privacy.net,Austria
+Switch,DoH,https://dns.switch.ch/dns-query,Switzerland
+Switch,DoT,dns.switch.ch,Switzerland
+AhaDNS,DoH,https://doh.ahadns.com/dns-query,Netherlands
+AhaDNS,DoT,dot.ahadns.com,Netherlands
+UncensoredDNS,DoH,https://anycast.censurfridns.dk/dns-query,Denmark
+UncensoredDNS,DoT,anycast.censurfridns.dk,Denmark
+Blokada,DoH,https://dns.blokada.org/dns-query,Privacy
+Blokada,DoT,dot.blokada.org,Privacy
+CleanBrowsing,DoH,https://doh.cleanbrowsing.org/doh/security-filter/,Security Only
+CleanBrowsing,DoT,security-filter-dns.cleanbrowsing.org,Security Only
+DeCloudUs,DoH,https://resolver.decloudus.com/dns-query,Privacy
+DeCloudUs,DoT,resolver.decloudus.com,Privacy
+Captnemo,DoH,https://doh.captnemo.in/dns-query,India
+Captnemo,DoT,dot.captnemo.in,India
+AA.net.uk,DoH,https://dns.aa.net.uk/dns-query,United Kingdom
+AA.net.uk,DoT,dns.aa.net.uk,United Kingdom
+Aquilenet,DoH,https://dns.aquilenet.fr/dns-query,France
+Aquilenet,DoT,dns.aquilenet.fr,France
+Belnet,DoH,https://dns.belnet.be/dns-query,Belgium
+Belnet,DoT,dns.belnet.be,Belgium
+CIRA Shield,DoH,https://private.canadianshield.cira.ca/dns-query,Canada
+CIRA Shield,DoT,private.canadianshield.cira.ca,Canada
+Comss.one,DoH,https://dns.comss.one/dns-query,Global/Russia
+Comss.one,DoT,dns.comss.one,Global/Russia
+Surfshark,DoH,https://dns.surfshark.com/dns-query,Privacy/VPN
+Surfshark,DoT,dns.surfshark.com,Privacy/VPN
+NordVPN,DoH,https://doh.nordvpn.com/dns-query,Privacy/VPN
+NordVPN,DoT,dot.nordvpn.com,Privacy/VPN
+FutaHost,DoH,https://dns.futahost.com/dns-query,Privacy
+FutaHost,DoT,dns.futahost.com,Privacy
+iCloud Relay,DoH,https://mask.icloud.com/dns-query,Apple Privacy
+iCloud Relay,DoH,https://mask-h2.icloud.com/dns-query,Apple Privacy
+RethinkDNS,DoH,https://sky.rethinkdns.com/1,Global Anycast
+RethinkDNS,DoT,sky.rethinkdns.com,Global Anycast
+Snopyta,DoH,https://fi.doh.snopyta.org/dns-query,Finland
+Snopyta,DoT,fi.dot.snopyta.org,Finland
+Tenta,DoH,https://doh.test.tenta.com,Testing
+Tenta,DoT,dns.test.tenta.com,Testing
+Windscribe,DoH,https://dns.windscribe.com/dns-query,VPN Provider
+Windscribe,DoT,dns.windscribe.com,VPN Provider
+Ondre Kelpe,DoH,https://doh.kel.pe,Germany
+Ondre Kelpe,DoT,dot.kel.pe,Germany
+Tiuxo,DoH,https://dns.tiuxo.com/dns-query,Privacy
+Tiuxo,DoT,dns.tiuxo.com,Privacy
+FFMUC,DoH,https://doh.ffmuc.net/dns-query,Germany
+FFMUC,DoT,dot.ffmuc.net,Germany
+AdfreeDNS,DoH,https://adfreedns.top/dns-query,Adblocking
+AdfreeDNS,DoT,adfreedns.top,Adblocking
+Absolight,DoH,https://resolver1.absolight.net/dns-query,France
+Absolight,DoT,resolver1.absolight.net,France
