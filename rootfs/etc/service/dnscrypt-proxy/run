@@ -1,2 +1,3 @@
+
 #!/bin/sh
 exec /bin/dnscrypt-proxy -config /config/dnscrypt-proxy/dnscrypt-proxy.toml
