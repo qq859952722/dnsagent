@@ -1,2 +1,2 @@
 #!/bin/sh
-exec /bin/smartdns.bin -c /config/smartdns/smartdns.conf
+exec /bin/smartdns.bin -c /config/smartdns/smartdns.conf -f
