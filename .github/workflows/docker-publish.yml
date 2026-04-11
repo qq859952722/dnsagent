@@ -11,6 +11,8 @@ on:
   push:
     # Publish semver tags as releases.
     tags: [ 'v*.*.*' ]
+  # 👇 加上这行，即可手动触发
+  workflow_dispatch:
   pull_request:
     branches: [ "main" ]
 
