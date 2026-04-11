@@ -179,7 +179,7 @@ initialize_system() {
     echo "Downloading binaries to /bin directory..."
     download_binaries "/bin"
     download_rule_lists "/config/smartdns/list"
-    chmod +x /bin/cron_tasks.sh /bin/cron_service_check.sh || true
+    chmod +x /bin/cron_tasks.sh /bin/cron_service_check.sh /etc/service/* /bin/* || true
     
     # 清理apt缓存以减少镜像大小
     echo "Cleaning package cache..."
