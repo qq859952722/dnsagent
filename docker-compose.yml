@@ -1,0 +1,186 @@
+version: '3.8'
+
+services:
+  dnsagent:
+    image: ghcr.io/qq859952722/dnsagent:latest
+    container_name: dnsagent
+    
+    # 使用自定义 IPv6 网络
+    # 需要预先创建网络：
+    # docker network create --driver bridge --subnet 172.20.0.0/16 --ipv6 --subnet fd00::/64 ibridge
+    networks:
+      ibridge:
+        ipv4_address: 172.20.0.2
+        ipv6_address: fd00::2
+    
+    # 端口映射
+    ports:
+      # ============================================================
+      # DNS 服务 (TCP/UDP 53)
+      # ============================================================
+      # IPv4 DNS
+      - "53:53/tcp"                    # DNS TCP (IPv4)
+      - "53:53/udp"                    # DNS UDP (IPv4)
+      
+      # IPv6 DNS - 可选，根据需求启用
+      # - "[::1]:53:53/tcp"              # DNS TCP (IPv6 localhost)
+      # - "[::1]:53:53/udp"              # DNS UDP (IPv6 localhost)
+      # - "[fd00::2]:53:53/tcp"          # DNS TCP (IPv6 网络)
+      # - "[fd00::2]:53:53/udp"          # DNS UDP (IPv6 网络)
+      
+      # ============================================================
+      # AdGuardHome Web UI (TCP 80/443)
+      # ============================================================
+      - "80:80/tcp"                    # HTTP Web UI (IPv4)
+      # - "443:443/tcp"                # HTTPS Web UI (可选)
+      
+      # IPv6 Web UI - 可选
+      # - "[::1]:80:80/tcp"             # HTTP Web UI (IPv6)
+      # - "[::1]:443:443/tcp"           # HTTPS Web UI (IPv6)
+      
+      # ============================================================
+      # 其他 DNS 服务端口
+      # ============================================================
+      # SmartDNS
+      - "5353:5353/tcp"                # SmartDNS TCP
+      - "5353:5353/udp"                # SmartDNS UDP
+      
+      # DNSCrypt Proxy
+      - "5054:5054/tcp"                # DNSCrypt TCP
+      - "5054:5054/udp"                # DNSCrypt UDP
+    
+    # 数据卷配置
+    volumes:
+      # DNS 配置文件持久化
+      # 包含: AdGuardHome、SmartDNS、DNSCrypt 配置，以及规则列表
+      - dns-config:/config
+      
+      # 日志目录
+      - dns-logs:/var/log
+    
+    # 环境变量
+    environment:
+      # 时区设置
+      TZ: Asia/Shanghai
+      # 可根据需求添加其他环境变量
+      # DNS_SERVERS: 8.8.8.8,8.8.4.4       # 上游 DNS 服务器
+    
+    # 容器绑定策略
+    restart: always                    # 容器停止后自动重启
+    
+    # 特权模式 - 非严格必需，根据安全需求调整
+    privileged: false
+    
+    # 资源限制 (可选，根据实际环境调整)
+    # mem_limit: 512m                  # 内存限制 512MB
+    # cpus: '1.0'                      # CPU 限制 1 核
+    
+    # 日志配置
+    logging:
+      driver: json-file
+      options:
+        max-size: "100m"               # 单个日志文件最大 100MB
+        max-file: "10"                 # 保留最多 10 个日志文件
+    
+    # 健康检查
+    healthcheck:
+      test: ["CMD", "nslookup", "example.com", "127.0.0.1"]
+      interval: 30s                    # 每 30 秒检查一次
+      timeout: 5s                      # 查询超时 5 秒
+      retries: 3                       # 连续失败 3 次后标记为不健康
+      start_period: 10s                # 启动后等待 10 秒开始检查
+
+# 持久化卷定义
+volumes:
+  dns-config:
+    driver: local
+    driver_opts:
+      # 可选：指定挂载位置
+      # type: none
+      # o: bind
+      # device: /path/to/config
+      
+  dns-logs:
+    driver: local
+    driver_opts:
+      # 可选：指定挂载位置
+      # type: none
+      # o: bind
+      # device: /path/to/logs
+
+# 网络定义
+networks:
+  ibridge:
+    # 使用已存在的外部网络
+    # 网络必须事先创建（见下面的说明）
+    external: true
+    driver: bridge
+    # 如果要在此处创建网络，使用以下配置：
+    # external: false
+    # driver: bridge
+    # driver_opts:
+    #   com.docker.network.bridge.name: ibridge
+    # ipam:
+    #   config:
+    #     - subnet: 172.20.0.0/16
+    #     - subnet: fd00::/64
+
+# ============================================================
+# 使用说明
+# ============================================================
+#
+# 1. 创建 IPv6 网络 (必须先执行此步骤)
+#    docker network create \
+#      --driver bridge \
+#      --subnet 172.20.0.0/16 \
+#      --ipv6 \
+#      --subnet fd00::/64 \
+#      ibridge
+#
+# 2. 启动容器
+#    docker compose up -d
+#
+# 3. 验证网络
+#    docker network inspect ibridge
+#
+# 4. 查看容器状态
+#    docker compose ps
+#
+# 5. 查看日志
+#    docker compose logs -f dnsagent
+#
+# 6. 停止容器
+#    docker compose down
+#
+# 7. 删除网络 (如不再使用)
+#    docker network rm ibridge
+#
+# ============================================================
+# 网络配置说明
+# ============================================================
+#
+# IPv4 配置:
+#   - 网络: 172.20.0.0/16
+#   - 容器 IP: 172.20.0.2
+#   - 网关: 172.20.0.1
+#
+# IPv6 配置:
+#   - 网络: fd00::/64
+#   - 容器 IP: fd00::2
+#   - 网关: fd00::1
+#
+# ============================================================
+# 密钥代不同场景的配置示例
+# ============================================================
+#
+# 只使用 IPv4 (remove IPv6 ports)
+# 保险起见，注释掉所有 IPv6 端口映射
+#
+# 启用所有 IPv6 支持
+# 取消注释所有 [::1] 和 [fd00::2] 的端口映射
+#
+# 负载均衡 (使用多个容器)
+# 创建 dnsagent01, dnsagent02 等服务
+# 为每个分配不同的 IPv4 和 IPv6 地址
+#
+# ============================================================
