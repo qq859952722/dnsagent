@@ -1,17 +1,8 @@
-version: '3.8'
-
 services:
   dnsagent:
     image: ghcr.io/qq859952722/dnsagent:latest
     container_name: dnsagent
-    
-    # 使用自定义 IPv6 网络
-    # 需要预先创建网络：
-    # docker network create --driver bridge --subnet 172.20.0.0/16 --ipv6 --subnet fd00::/64 ibridge
-    networks:
-      ibridge:
-        ipv4_address: 172.20.0.2
-        ipv6_address: fd00::2
+
     
     # 端口映射
     ports:
@@ -53,10 +44,10 @@ services:
     volumes:
       # DNS 配置文件持久化
       # 包含: AdGuardHome、SmartDNS、DNSCrypt 配置，以及规则列表
-      - dns-config:/config
+      - ./dns-config:/config
       
       # 日志目录
-      - dns-logs:/var/log
+      - ./dns-logs:/var/log
     
     # 环境变量
     environment:
@@ -75,55 +66,13 @@ services:
     # mem_limit: 512m                  # 内存限制 512MB
     # cpus: '1.0'                      # CPU 限制 1 核
     
-    # 日志配置
-    logging:
-      driver: json-file
-      options:
-        max-size: "100m"               # 单个日志文件最大 100MB
-        max-file: "10"                 # 保留最多 10 个日志文件
-    
-    # 健康检查
-    healthcheck:
-      test: ["CMD", "nslookup", "example.com", "127.0.0.1"]
-      interval: 30s                    # 每 30 秒检查一次
-      timeout: 5s                      # 查询超时 5 秒
-      retries: 3                       # 连续失败 3 次后标记为不健康
-      start_period: 10s                # 启动后等待 10 秒开始检查
+    # 网络配置
+    networks:
+      ibridge: {}
 
-# 持久化卷定义
-volumes:
-  dns-config:
-    driver: local
-    driver_opts:
-      # 可选：指定挂载位置
-      # type: none
-      # o: bind
-      # device: /path/to/config
-      
-  dns-logs:
-    driver: local
-    driver_opts:
-      # 可选：指定挂载位置
-      # type: none
-      # o: bind
-      # device: /path/to/logs
-
-# 网络定义
 networks:
   ibridge:
-    # 使用已存在的外部网络
-    # 网络必须事先创建（见下面的说明）
     external: true
-    driver: bridge
-    # 如果要在此处创建网络，使用以下配置：
-    # external: false
-    # driver: bridge
-    # driver_opts:
-    #   com.docker.network.bridge.name: ibridge
-    # ipam:
-    #   config:
-    #     - subnet: 172.20.0.0/16
-    #     - subnet: fd00::/64
 
 # ============================================================
 # 使用说明
